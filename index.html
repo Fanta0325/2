@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HDMS UTILS v2</title>
+<title>HDMS UTILS V2.1</title>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -123,6 +123,15 @@
         cursor: pointer;
         border-radius: 5px;
     }
+    /* 메뉴를 닫는 버튼 스타일 */
+    .close-menu {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        color: white;
+        cursor: pointer;
+    }
 </style>
 </head>
 <body>
@@ -132,6 +141,7 @@
 
 <!-- 메뉴 -->
 <div class="menu" id="menu">
+    <span class="close-menu" onclick="toggleMenu()">&#10005;</span>
     <a href="#" onclick="showSection('picker')">숫자 뽑기</a>
     <a href="#" onclick="showSection('stopwatch')">스탑워치</a>
     <a href="#" onclick="showSection('timer')">타이머</a>
@@ -170,12 +180,14 @@
 
 <!-- Update Note 팝업 -->
 <div id="updatePopup">
-    <h2><2024 9/16 변경사항 - v2></h2>
+    <h2><2024 9/16 변경사항 - v2.1></h2>
     <p>1. 햄버거 메뉴와 기능 전환 추가</p>
     <p>2. 스탑워치 추가</p>
     <p>3. 타이머 추가(예정)</p>
-    <p>4. 'Update Note' 추가</p>
+    <p>4. Update Note 추가</p>
     <p>5. 특정한 숫자가 비정상적으로 뽑히는 현상은 확인한 결과 확률에 오류가 발견되지 않았음</p>
+    <p>+6. 햄버거 매뉴를 닫을 수 없는 문제 수정</p>
+    <p>+7. Update Note가 비활성화된 문제 수정</p>
     <button onclick="closeUpdatePopup()">닫기</button>
 </div>
 
@@ -217,6 +229,7 @@ function showSection(section) {
         container.style.display = 'none';
     });
     document.getElementById(section).style.display = 'block';
+    toggleMenu(); // 메뉴를 자동으로 닫음
 }
 
 // 숫자 뽑기 기능
