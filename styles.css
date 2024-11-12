@@ -57,6 +57,10 @@ body {
     text-align: center;
 }
 
+#main h1 {
+    font-size: 4em;
+}
+
 .section {
     display: none;
 }
@@ -85,4 +89,15 @@ body {
 
 #updateNoteModal.active {
     display: flex;
+}
+
+#main img {
+    width: 150px;
+    margin-top: 20px;
+}
+
+#main p {
+    color: #333;
+    margin-top: 10px;
+    font-style: italic;
 }
