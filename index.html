@@ -1,43 +1,286 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HDMS UTILS</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HDMS UTILS V2.1</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+    }
+    .container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        display: none; /* 초기에는 숨김 */
+    }
+    h1 {
+        color: #333;
+    }
+    button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        background-color: #00ffbf;
+        color: #fff;
+        cursor: pointer;
+    }
+    #result {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+    }
+    #result h2 {
+        margin-bottom: 10px;
+        color: #333;
+    }
+    #result p {
+        font-size: 20px;
+        color: #555;
+    }
+    .credits {
+        margin-top: 50px;
+        text-align: center;
+        color: purple;
+    }
+    .center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    /* 햄버거 메뉴 스타일 */
+    .menu-btn {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 30px;
+        cursor: pointer;
+    }
+    .menu {
+        width: 250px;
+        height: 100%;
+        background-color: #333;
+        position: fixed;
+        top: 0;
+        left: -250px;
+        transition: left 0.3s;
+        padding-top: 60px;
+    }
+    .menu a {
+        padding: 10px 20px;
+        text-decoration: none;
+        color: #fff;
+        display: block;
+    }
+    .menu a:hover {
+        background-color: #575757;
+    }
+    .update-note {
+        color: red;
+        font-weight: bold;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+    /* 팝업 스타일 */
+    #updatePopup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        padding: 20px;
+        background-color: white;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    #updatePopup h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+    #updatePopup p {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+    #updatePopup button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #00ffbf;
+        border: none;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    /* 메뉴를 닫는 버튼 스타일 */
+    .close-menu {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        color: white;
+        cursor: pointer;
+    }
+</style>
 </head>
 <body>
-    <!-- 햄버거 메뉴 -->
-    <div id="menu" class="menu-closed">
-        <button id="menu-toggle" class="menu-toggle">☰</button>
-        <div class="menu-content">
-            <ul>
-                <li><a href="#" class="main-link">HDMS UTILS</a></li>
-                <li><a href="#" onclick="showSection('numberPicker')">숫자뽑기</a></li>
-                <li><a href="#" onclick="showSection('stopwatch')">스탑워치</a></li>
-                <li><a href="#" onclick="showSection('timer')">타이머</a></li>
-                <li><a href="#" class="update-note" onclick="showUpdateNote()">Update Note</a></li>
-            </ul>
-        </div>
-    </div>
 
-    <!-- 메인 콘텐츠 영역 -->
-    <div id="content">
-        <div id="main" class="section active">
-            <h1>HDMS UTILS</h1>
-            <img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fnamu.wiki%2Fw%2F%25ED%2596%25A5%25EB%258F%2599%25EC%25A4%2591%25ED%2595%2599%25EA%25B5%2590&psig=AOvVaw1cbz_QcYqZE9edMoxiKKwe&ust=1731471886920000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCOiNxMf51YkDFQAAAAAdAAAAABAE" alt="Image">
-            <p>Made by Lantern</p>
-        </div>
-        <div id="numberPicker" class="section">
-            <h2>숫자뽑기</h2>
-            <label>범위 설정: <input type="number" id="rangeMin" placeholder="최소값"> ~ <input type="number" id="rangeMax" placeholder="최대값"></label>
-            <label>뽑을 개수: <input type="number" id="quantity" placeholder="개수"></label>
-            <button onclick="pickNumbers()">숫자 뽑기</button>
-            <div id="numberResult"></div>
-        </div>
-        <!-- 나머지 코드 동일 -->
-    </div>
+<!-- 햄버거 버튼 -->
+<div class="menu-btn" onclick="toggleMenu()">&#9776;</div>
 
-    <script src="script.js"></script>
+<!-- 메뉴 -->
+<div class="menu" id="menu">
+    <span class="close-menu" onclick="toggleMenu()">&#10005;</span>
+    <a href="#" onclick="showSection('picker')">숫자 뽑기</a>
+    <a href="#" onclick="showSection('stopwatch')">스탑워치</a>
+    <a href="#" onclick="showSection('timer')">타이머</a>
+    <div class="update-note" onclick="showUpdatePopup()">Update Note</div>
+</div>
+
+<!-- 숫자 뽑기 -->
+<div class="container" id="picker">
+    <h1>숫자 뽑기</h1>
+    <form id="numberForm">
+        <label for="startNumber">시작하는 숫자:</label><br>
+        <input type="number" id="startNumber" name="startNumber" required><br><br>
+        <label for="endNumber">끝나는 숫자:</label><br>
+        <input type="number" id="endNumber" name="endNumber" required><br><br>
+        <label for="numberOfSelections">뽑을 숫자의 수:</label><br>
+        <input type="number" id="numberOfSelections" name="numberOfSelections" required><br><br>
+        <button type="button" onclick="pickNumbers()">뽑기</button>
+    </form>
+    <div id="result"></div>
+</div>
+
+<!-- 스탑워치 -->
+<div class="container" id="stopwatch" style="display: none;">
+    <h1>스탑워치</h1>
+    <p id="stopwatchDisplay">00:00:00</p>
+    <button onclick="startStopwatch()">시작</button>
+    <button onclick="stopStopwatch()">정지</button>
+    <button onclick="resetStopwatch()">리셋</button>
+</div>
+
+<!-- 타이머 -->
+<div class="container" id="timer" style="display: none;">
+    <h1>타이머</h1>
+    <p>해당 기능은 아직 준비중입니다.</p>
+</div>
+
+<!-- Update Note 팝업 -->
+<div id="updatePopup">
+    <h2><2024 9/16 변경사항 - v2.1></h2>
+    <p>1. 햄버거 메뉴와 기능 전환 추가</p>
+    <p>2. 스탑워치 추가</p>
+    <p>3. 타이머 추가(예정)</p>
+    <p>4. Update Note 추가</p>
+    <p>5. 특정한 숫자가 비정상적으로 뽑히는 현상은 확인한 결과 확률에 오류가 발견되지 않았음</p>
+    <p>+6. 햄버거 매뉴를 닫을 수 없는 문제 수정</p>
+    <p>+7. Update Note가 비활성화된 문제 수정</p>
+    <button onclick="closeUpdatePopup()">닫기</button>
+</div>
+
+<script>
+let passwordVerified = false;
+
+// 암호 입력 팝업
+function promptPassword() {
+    const storedPassword = "3257";  // 암호를 "3257"로 설정
+    const enteredPassword = prompt("해당 웹페이지를 사용하시려면 암호를 입력해주세요.");
+
+    if (enteredPassword === storedPassword) {
+        passwordVerified = true;
+        document.querySelectorAll('.container').forEach(container => {
+            container.style.display = 'block';
+        });
+    } else {
+        alert("잘못된 암호입니다.");
+        promptPassword();
+    }
+}
+
+// 페이지가 로드될 때 암호 확인
+window.onload = function() {
+    if (!passwordVerified) {
+        promptPassword();
+    }
+};
+
+// 햄버거 메뉴 토글
+function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.left = menu.style.left === "0px" ? "-250px" : "0px";
+}
+
+// 기능 전환
+function showSection(section) {
+    document.querySelectorAll('.container').forEach(container => {
+        container.style.display = 'none';
+    });
+    document.getElementById(section).style.display = 'block';
+    toggleMenu(); // 메뉴를 자동으로 닫음
+}
+
+// 숫자 뽑기 기능
+function pickNumbers() {
+    var startNumber = parseInt(document.getElementById("startNumber").value);
+    var endNumber = parseInt(document.getElementById("endNumber").value);
+    var numberOfSelections = parseInt(document.getElementById("numberOfSelections").value);
+
+    var numbers = [];
+    for (var i = startNumber; i <= endNumber; i++) {
+        if (i !== 2) {
+            numbers.push(i);
+        }
+    }
+
+    var shuffledNumbers = numbers.sort(() => Math.random() - 0.5);
+    var selectedNumbers = shuffledNumbers.slice(0, numberOfSelections);
+
+    document.getElementById("result").innerHTML = "<h2>뽑힌 숫자:</h2><p>" + selectedNumbers.join(", ") + "</p>";
+}
+
+// 스탑워치 기능
+let stopwatchInterval;
+let elapsedTime = 0;
+
+function startStopwatch() {
+    if (!stopwatchInterval) {
+        stopwatchInterval = setInterval(() => {
+            elapsedTime++;
+            document.getElementById("stopwatchDisplay").textContent = formatTime(elapsedTime);
+        }, 1000);
+    }
+}
+
+function stopStopwatch() {
+    clearInterval(stopwatchInterval);
+    stopwatchInterval = null;
+}
+    function resetStopwatch() {
+    stopStopwatch();
+    elapsedTime = 0;
+    document.getElementById("stopwatchDisplay").textContent = formatTime(elapsedTime);
+}
+
+function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+}
+</script>
+
 </body>
 </html>
